@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Control Ventas</title>
+
+    <style>
+        td{
+            border: solid 1px black;
+        }
+    </style>
+</head>
+<body>
+
+<select id="selectorVendedores"></select>
+
+<table style = "border: solid 1px black">
+
+    <thead>
+    <tr>
+        <td>Vendedor</td>
+        <td>Cliente</td>
+        <td>Fecha</td>
+        <td>Importe</td>
+    </tr>
+    </thead>
+    <tbody id="tablaVentas"></tbody>
+</table>
+
+
+<script src = "js/vendedores.js"></script>
+
+<script>
+    VistaSelectorVendedores.iniciar('selectorVendedores');
+    ModeloVendedores.url = '../api/v1.0/vendedores';
+    ControladorVendedores.iniciar();
+</script>
+<script>
+
+    //hay que ver como hacer que no haya retardo al cargar los datos
+    fetch('../api/v1.0/ventas').then(function(respuesta){
+        return respuesta.json();
+    }).then(function(datosJson){
+        //console.log(datosJson);
+        let tabla = document.getElementById('tablaVentas');
+     /*   datosJson.sort(function(a,b) {
+            if(a.vendedor.apellidos< b.vendedor.apellidos) {return -1;}
+            if(a.vendedor.apellido > b.vendedor.apellidos) {return 1;}
+            return 0;
+        });*/
+
+        let contador = 25;
+        datosJson.forEach(function(venta){
+
+            contador--;
+            if(contador<=0) return;
+            //permite escribir codigo html entre sus etiquetas
+            tabla.innerHTML += `<tr>
+                <td>${venta.vendedor.apellidos}, ${venta.vendedor.nombre}</td>
+                <td>${venta.cliente.nombre}</td>
+                <td>${venta.fecha}</td>
+                <td>${venta.importe} €</td>
+
+            </tr>`;
+        });
+    });
+
+
+
+</script>
+
+</body>
+</html>
